@@ -1,11 +1,13 @@
 package libs
 
 type Options struct {
-	Input Input
-	Paths Paths
+	Inputs   map[string]struct{}
+	CmdInput CmdInput
+	Paths    Paths
+	Scan     Scan
 }
 
-type Input struct {
+type CmdInput struct {
 	Input      string
 	Inputs     []string
 	InputFile  string
@@ -15,4 +17,10 @@ type Input struct {
 type Paths struct {
 	Result string
 	Org    string
+	Root   string
+}
+
+type Scan struct {
+	Flow       string
+	FlowFolder string
 }

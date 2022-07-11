@@ -3,6 +3,7 @@ module YNM3000
 go 1.18
 
 require (
+	github.com/Shopify/yaml v2.1.0+incompatible
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/spf13/cobra v1.5.0 // indirect

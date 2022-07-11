@@ -46,7 +46,14 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.PersistentFlags().StringVarP(&options.Input.ResultPath, "result", "o", "./results", "结果保存目录")
+
+	//输入
+	rootCmd.PersistentFlags().StringVarP(&options.CmdInput.ResultPath, "result", "o", "./results", "结果保存目录")
+	rootCmd.PersistentFlags().StringVarP(&options.CmdInput.Input, "input", "i", "", "目标")
+	rootCmd.PersistentFlags().StringSliceVarP(&options.CmdInput.Inputs, "inputs", "I", []string{}, "多个目标")
+
+	//结果
+	rootCmd.PersistentFlags().StringVarP(&options.CmdInput.InputFile, "inputFile", "f", "", "读入的文件")
 	cobra.OnInitialize(initConfig)
 }
 

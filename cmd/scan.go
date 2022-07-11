@@ -5,7 +5,11 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"YNM3000/core"
+	"YNM3000/utils"
 	"log"
+	"os"
+	"path"
 
 	"github.com/spf13/cobra"
 )
@@ -24,6 +28,10 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
+	//workflow
+	rootCmd.PersistentFlags().StringVar(&options.Scan.Flow, "flow", "general", "指定workflow")
+	//workflow
+	rootCmd.PersistentFlags().StringVar(&options.Scan.FlowFolder, "flowPath", "", "指定workflow的目录")
 	rootCmd.AddCommand(scanCmd)
 
 	// Here you will define your flags and configuration settings.
@@ -38,5 +46,21 @@ func init() {
 }
 
 func runScan(_ *cobra.Command, _ []string) {
-	log.Println("runScan()")
+	log.Println("==runScan==")
+
+	initScan()
+	for input := range options.Inputs {
+		core.Run(input, options)
+	}
+}
+
+func initScan() {
+	//设置workflow的folde
+	if options.Scan.FlowFolder == "" {
+		options.Scan.FlowFolder = path.Join(options.Paths.Root, "workflow")
+		if !utils.FolderExists(options.Scan.FlowFolder) {
+			log.Println("workflow目录不存在")
+			os.Exit(1)
+		}
+	}
 }

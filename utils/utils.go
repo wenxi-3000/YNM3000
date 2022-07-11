@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bufio"
 	"os"
 	"strings"
 
@@ -28,4 +29,32 @@ func FolderExists(foldername string) bool {
 func MakeDir(folder string) {
 	folder = NormalizePath(folder)
 	os.MkdirAll(folder, 0750)
+}
+
+//按行读取一个文件，返回map[string]{}{}
+func FileSet(path string) (map[string]struct{}, error) {
+	results := map[string]struct{}{}
+	if strings.HasPrefix(path, "~") {
+		path, _ = homedir.Expand(path)
+	}
+	file, err := os.Open(path)
+	if err != nil {
+		return results, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" {
+			continue
+		}
+		results[line] = struct{}{}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return results, err
+	}
+
+	return results, nil
 }

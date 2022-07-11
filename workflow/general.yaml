@@ -1,0 +1,7 @@
+name: general
+desc: run normal routine
+validator: domain
+
+routines:
+  - modules:
+      - subdomain
