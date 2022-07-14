@@ -4,6 +4,7 @@ import (
 	"YNM3000/utils"
 	"log"
 	"path"
+	"path/filepath"
 )
 
 func InitOptions(opt *Options) {
@@ -23,6 +24,7 @@ func InitPath(opt *Options) Paths {
 	if !utils.FolderExists(resultPath) {
 		utils.MakeDir(resultPath)
 	}
+	resultPath, _ = filepath.Abs(resultPath)
 	paths.Result = resultPath
 
 	//项目根目录

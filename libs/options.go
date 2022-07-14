@@ -2,6 +2,7 @@ package libs
 
 type Options struct {
 	Inputs   map[string]struct{}
+	Results  string
 	CmdInput CmdInput
 	Paths    Paths
 	Scan     Scan

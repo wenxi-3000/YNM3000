@@ -20,24 +20,24 @@ steps:
   - required:
       - "{{.Binaries}}/subfinder"
     commands:
-      - "{{.Binaries}}/subfinder -d {{.Target}} -t {{.subfinderThreads}} -o {{.Output}}/subdomain/{{.Workspace}}-subfinder.txt >/dev/null 2>&1"
+      - "{{.Binaries}}/subfinder -d {{.Target}} -t {{.subfinderThreads}} -o {{.Output}}/subdomain/{{.Target}}-subfinder.txt"
 
   # cleaning some result
   - scripts:
-      - Append("{{.Output}}/subdomain/sum-{{.Workspace}}.txt", "{{.Output}}/subdomain/{{.Workspace}}-subfinder.txt")
+      - Append("{{.Output}}/subdomain/sum-{{.Workspace}}.txt", "{{.Output}}/subdomain/{{.Target}}-subfinder.txt")
       # remove junk subdomain like sample@subdomain.com and 1-2-3.subdomain.com format
-      - ExecCmd("cat {{.Output}}/subdomain/sum-{{.Workspace}}.txt | {{.Binaries}}/cleansub -t '{{.Target}}' > {{.Output}}/subdomain/final-{{.Workspace}}.txt")
+      - ExecCmd("cat {{.Output}}/subdomain/sum-{{.Target}}.txt | {{.Binaries}}/cleansub -t '{{.Target}}' > {{.Output}}/subdomain/final-{{.Target}}.txt")
   - scripts:
-      - SortU("{{.Output}}/subdomain/final-{{.Workspace}}.txt")
+      - SortU("{{.Output}}/subdomain/final-{{.Target}}.txt")
 
   # get more related domains
   - required:
       - "{{.Binaries}}/metabigor"
     # assume you run 'osmedeus scan -t example.com' then {{.Org}} == 'example'
     commands:
-      - "echo '{{.Org}}' | {{.Binaries}}/metabigor cert --json -o {{.Output}}/subdomain/more-json-{{.Workspace}}.txt"
+      - "echo '{{.Org}}' | {{.Binaries}}/metabigor cert --json -o {{.Output}}/subdomain/more-json-{{.Target}}.txt"
     scripts:
-      - ExecCmd("cat {{.Output}}/subdomain/more-json-{{.Workspace}}.txt | jq -r '.Domain' | sed 's/\*.//g' | sort -u > {{.Output}}/subdomain/more-{{.Workspace}}.txt")
+      - ExecCmd("cat {{.Output}}/subdomain/more-json-{{.Target}}.txt | jq -r '.Domain' | sed 's/\*.//g' | sort -u > {{.Output}}/subdomain/more-{{.Target}}.txt")
 
 post_run:
   # delete all files in workspaces folder except a file lists in report section
