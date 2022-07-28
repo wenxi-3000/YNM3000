@@ -35,7 +35,7 @@ func (r *Runner) PrepareTem() map[string]string {
 	temp := temParam
 
 	temp["Binaries"] = path.Join(r.Paths.Root, "binaries")
-	temp["Output"] = path.Join(r.Paths.Root, "results", "org")
+	temp["Workspace"] = r.Paths.Org
 	temp["Target"] = r.Input
 
 	return temp
@@ -78,4 +78,9 @@ func ResolveSlice(slice []string, data map[string]string) (resolveSlice []string
 		resolveSlice = append(resolveSlice, ResolveData(s, data))
 	}
 	return resolveSlice
+}
+
+//检查模板里的reuired
+func CheckRequired() {
+
 }

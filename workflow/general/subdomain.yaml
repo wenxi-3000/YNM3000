@@ -20,11 +20,11 @@ steps:
   - required:
       - "{{.Binaries}}/subfinder"
     commands:
-      - "{{.Binaries}}/subfinder -d {{.Target}} -t {{.subfinderThreads}} -o {{.Output}}/subdomain/{{.Target}}-subfinder.txt"
+      - "{{.Binaries}}/subfinder -d {{.Target}} -t {{.subfinderThreads}} -o {{.Workspace}}/subdomain/{{.Target}}-subfinder.txt"
 
   # cleaning some result
   - scripts:
-      - Append("{{.Output}}/subdomain/sum-{{.Workspace}}.txt", "{{.Output}}/subdomain/{{.Target}}-subfinder.txt")
+      - Append("{{.Workspace}}/sum-subdomain.txt", "{{.Workspace}}/subdomain/{{.Target}}-subfinder.txt")
       # remove junk subdomain like sample@subdomain.com and 1-2-3.subdomain.com format
       - ExecCmd("cat {{.Output}}/subdomain/sum-{{.Target}}.txt | {{.Binaries}}/cleansub -t '{{.Target}}' > {{.Output}}/subdomain/final-{{.Target}}.txt")
   - scripts:

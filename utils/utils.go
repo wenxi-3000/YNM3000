@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bufio"
+	"io/ioutil"
 	"os"
 	"strings"
 
@@ -20,6 +21,15 @@ func NormalizePath(path string) string {
 func FolderExists(foldername string) bool {
 	foldername = NormalizePath(foldername)
 	if _, err := os.Stat(foldername); os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
+
+//判断文件是否存在
+func FileExists(filename string) bool {
+	filename = NormalizePath(filename)
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
 		return false
 	}
 	return true
@@ -57,4 +67,74 @@ func FileSet(path string) (map[string]struct{}, error) {
 	}
 
 	return results, nil
+}
+
+// FileLength count len of file
+func FileLength(filename string) int {
+	filename = NormalizePath(filename)
+	if !FileExists(filename) {
+		return 0
+	}
+	return CountLines(filename)
+}
+
+// CountLines Return the lines amount of the file
+func CountLines(filename string) int {
+	var amount int
+	if strings.HasPrefix(filename, "~") {
+		filename, _ = homedir.Expand(filename)
+	}
+	file, err := os.Open(filename)
+	if err != nil {
+		return amount
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		val := strings.TrimSpace(scanner.Text())
+		if val == "" {
+			continue
+		}
+		amount++
+	}
+
+	if err := scanner.Err(); err != nil {
+		return amount
+	}
+	return amount
+}
+
+// GetFileContent Reading file and return content of it
+func GetFileContent(filename string) string {
+	var result string
+	if strings.Contains(filename, "~") {
+		filename, _ = homedir.Expand(filename)
+	}
+	file, err := os.Open(filename)
+	if err != nil {
+		return result
+	}
+	defer file.Close()
+	b, err := ioutil.ReadAll(file)
+	if err != nil {
+		return result
+	}
+	return string(b)
+}
+
+// AppendToContent append string to a file
+func AppendToContent(filename string, data string) (string, error) {
+	// If the file doesn't exist, create it, or append to the file
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return "", err
+	}
+	if _, err := f.Write([]byte(data)); err != nil {
+		return "", err
+	}
+	if err := f.Close(); err != nil {
+		return "", err
+	}
+	return filename, nil
 }

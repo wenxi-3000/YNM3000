@@ -30,6 +30,18 @@ func InitPath(opt *Options) Paths {
 	//项目根目录
 	rootPath := path.Dir(resultPath)
 	paths.Root = rootPath
+
+	//确定org目录
+	if opt.Org == "" {
+		paths.Org = path.Join(resultPath, "no-org")
+	} else {
+		paths.Org = path.Join(resultPath, "org", opt.Org)
+	}
+	if !utils.FolderExists(paths.Org) {
+		utils.MakeDir(paths.Org)
+	}
+	log.Println(paths.Org)
+
 	return paths
 }
 

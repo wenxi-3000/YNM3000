@@ -6,6 +6,7 @@ type Options struct {
 	CmdInput CmdInput
 	Paths    Paths
 	Scan     Scan
+	Org      string
 }
 
 type CmdInput struct {
@@ -17,8 +18,8 @@ type CmdInput struct {
 
 type Paths struct {
 	Result string
-	Org    string
 	Root   string
+	Org    string
 }
 
 type Scan struct {
