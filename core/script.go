@@ -2,13 +2,16 @@ package core
 
 import (
 	script "YNM3000/scripts"
+	"YNM3000/utils"
 	"log"
 
 	"github.com/robertkrimen/otto"
 )
 
 const (
-	Append = "Append"
+	Append   = "Append"
+	Cleaning = "Cleaning"
+	ExecCmd  = "ExecCmd"
 )
 
 // InitVM init scripting engine
@@ -43,15 +46,35 @@ func (r *Runner) LoadScripts() string {
 	var output string
 	vm := r.VM
 
-	// set attribute
-	vm.Set("Target", r.Target)
-
 	vm.Set(Append, func(call otto.FunctionCall) otto.Value {
 		dest := call.Argument(0).String()
 		src := call.Argument(1).String()
 		script.Append(dest, src)
 		returnValue, _ := otto.ToValue(true)
 		return returnValue
+	})
+
+	vm.Set(Cleaning, func(call otto.FunctionCall) otto.Value {
+		if !r.Clean {
+			return otto.Value{}
+		}
+		script.Cleaning(call.Argument(0).String(), r.Reports)
+		return otto.Value{}
+	})
+
+	// ExecCmd execute command
+	vm.Set(ExecCmd, func(call otto.FunctionCall) otto.Value {
+		cmd := call.Argument(0).String()
+		_, err := utils.RunCommandWithErr(cmd)
+		var validate bool
+		if err != nil {
+			validate = true
+		}
+		result, err := vm.ToValue(validate)
+		if err != nil {
+			return otto.Value{}
+		}
+		return result
 	})
 
 	r.VM = vm

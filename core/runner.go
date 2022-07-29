@@ -2,7 +2,9 @@ package core
 
 import (
 	"YNM3000/libs"
+	"YNM3000/utils"
 	"bufio"
+	"fmt"
 	"log"
 	"os/exec"
 
@@ -14,8 +16,9 @@ type Runner struct {
 	InputType string //domain, ip, url, domain-file, url-file,ip-file
 	Routines  []libs.Routine
 	Paths     libs.Paths
+	Reports   []string
 	VM        *otto.Otto
-	Target    map[string]string
+	Clean     bool
 }
 
 func InitRunner(input string, opt libs.Options) Runner {
@@ -23,7 +26,7 @@ func InitRunner(input string, opt libs.Options) Runner {
 	runner.Input = input
 	runner.Paths = opt.Paths
 	runner.Routines = Parse(opt)
-	runner.InitVM()
+	runner.Clean = opt.Clean
 	return runner
 	//解析module模板
 	//moduleFolder := path.Join(opt.Scan.FlowFolder, opt.Scan.Flow)
@@ -33,6 +36,7 @@ func InitRunner(input string, opt libs.Options) Runner {
 func Run(input string, opt libs.Options) {
 	runner := InitRunner(input, opt)
 	runner.PrepareModule()
+	runner.InitVM()
 	runner.Start()
 
 }
@@ -48,6 +52,11 @@ func (r *Runner) Start() {
 			for _, step := range module.Steps {
 				// log.Println("=========================")
 				// log.Println(step)
+				err := r.CheckRequired(step.Required)
+				if err != nil {
+					log.Println(err)
+				}
+
 				if len(step.Commands) > 0 {
 					for _, command := range step.Commands {
 						results, err := RunCommand(command)
@@ -65,12 +74,14 @@ func (r *Runner) Start() {
 					//Append(script)
 				}
 			}
+
+			for _, postRun := range module.PostRun {
+				log.Println(postRun)
+				log.Println(r.Reports)
+				r.VM.Run(postRun)
+			}
 		}
 	}
-}
-
-func (r *Runner) RunStep() {
-	CheckRequired()
 }
 
 func RunCommand(cmd string) (string, error) {
@@ -102,3 +113,32 @@ func RunCommand(cmd string) (string, error) {
 	return output, nil
 
 }
+
+// CheckRequired check if required file exist or not
+func (r *Runner) CheckRequired(requires []string) error {
+	if len(requires) == 0 {
+		return nil
+	}
+
+	for _, require := range requires {
+		//require = ResolveData(require, options.Scan.ROptions)
+		if !utils.FileExists(require) {
+			return fmt.Errorf("Missing Requirement: %s", require)
+		}
+		continue
+	}
+	return nil
+}
+
+// func (r *Runner) ConditionExecScript(script string) bool {
+// 	value, err := r.VM.Run(script)
+
+// 	if err == nil {
+// 		out, nerr := value.ToBoolean()
+// 		if nerr == nil {
+// 			return out
+// 		}
+// 	}
+
+// 	return false
+// }

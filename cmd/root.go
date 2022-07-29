@@ -53,6 +53,7 @@ func init() {
 	rootCmd.PersistentFlags().StringSliceVarP(&options.CmdInput.Inputs, "inputs", "I", []string{}, "多个目标")
 	rootCmd.PersistentFlags().StringVarP(&options.CmdInput.InputFile, "inputFile", "f", "", "读入的文件")
 	rootCmd.PersistentFlags().StringVar(&options.Org, "org", "", "org")
+	rootCmd.PersistentFlags().BoolVar(&options.Clean, "clean", true, "是否清理文件")
 	cobra.OnInitialize(initConfig)
 }
 

@@ -7,6 +7,7 @@ type Options struct {
 	Paths    Paths
 	Scan     Scan
 	Org      string
+	Clean    bool
 }
 
 type CmdInput struct {

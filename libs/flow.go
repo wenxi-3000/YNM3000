@@ -14,10 +14,12 @@ type Step struct {
 }
 
 type Module struct {
-	Name   string
-	Desc   string
-	Params []map[string]string
-	Steps  []Step
+	Name    string
+	Desc    string
+	Params  []map[string]string
+	Steps   []Step
+	PostRun []string `yaml:"last_run"`
+	Report  []string
 }
 
 type Routine struct {

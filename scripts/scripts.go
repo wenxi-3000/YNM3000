@@ -2,7 +2,12 @@ package scripts
 
 import (
 	"YNM3000/utils"
+	"fmt"
 	"log"
+	"os"
+	"path/filepath"
+
+	"github.com/thoas/go-funk"
 )
 
 // func (r *Runner) LoadScripts() {
@@ -37,4 +42,42 @@ func Append(dest string, src string) {
 	}
 	data := utils.GetFileContent(src)
 	utils.AppendToContent(dest, data)
+}
+
+//Cleaning the execution directory
+func Cleaning(folder string, reports []string) {
+	// list all the file
+	items, err := filepath.Glob(fmt.Sprintf("%v/*", folder))
+	if err != nil {
+		return
+	}
+
+	for _, item := range items {
+		item = utils.NormalizePath(item)
+		if funk.Contains(reports, item) {
+			continue
+		}
+
+		fi, err := os.Stat(item)
+		if err != nil {
+			continue
+		}
+		switch mode := fi.Mode(); {
+		case mode.IsDir():
+			DeleteFolder(item)
+			continue
+		case mode.IsRegular():
+			DeleteFile(item)
+		}
+	}
+}
+
+// DeleteFolder delete entire folder
+func DeleteFolder(path string) {
+	os.RemoveAll(utils.NormalizePath(path))
+}
+
+// DeleteFile delete file
+func DeleteFile(filename string) {
+	os.Remove(utils.NormalizePath(filename))
 }
