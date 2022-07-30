@@ -79,7 +79,6 @@ func (r *Runner) LoadScripts() string {
 	})
 
 	vm.Set(CreateFolder, func(call otto.FunctionCall) otto.Value {
-		log.Println(call.Argument(0).String())
 		utils.MakeDir(call.Argument(0).String())
 		return otto.Value{}
 	})

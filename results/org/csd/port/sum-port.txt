@@ -1,0 +1,5 @@
+pan.csdzds.cn:80
+pan.csdzds.cn:443
+office.csdzds.cn:80
+office.csdzds.cn:443
+csdzds.cn:80

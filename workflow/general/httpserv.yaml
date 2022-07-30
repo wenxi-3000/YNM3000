@@ -1,0 +1,24 @@
+name: httpserv
+desc: HTTP survival scan
+
+report:
+  - "{{.Workspace}}/httpserv/sum-domain.txt"
+  - "{{.Workspace}}/httpserv/new-domain.txt"
+
+pre_run:
+  - CreateFolder("{{.Workspace}}/httpserv/")
+
+
+steps:
+  - required:
+      - "{{.Binaries}}/httpx"
+      - "{{.Workspace}}/subdomain/sum-subdomain.txt"
+    commands:
+      - "{{.Binaries}}/httpx -list {{.Workspace}}/subdomain/sum-subdomain.txt -silent -o {{.Workspace}}/httpserv/{{.Target}}-httpx.txt"
+    scripts:
+      - ExecCmd("cat {{.Workspace}}/httpserv/{{.Target}}-httpx.txt | {{.Binaries}}/finddomain > {{.Workspace}}/httpserv/domains.txt")
+      - ExecCmd("cat {{.Workspace}}/httpserv/domains.txt | {{.Binaries}}/anew {{.Workspace}}/httpserv/sum-domain.txt > {{.Workspace}}/httpserv/new-domain.txt")
+
+last_run:
+  # delete all files in workspaces folder except a file lists in report section
+  - Cleaning("{{.Workspace}}/httpserv/")

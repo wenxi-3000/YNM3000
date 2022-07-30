@@ -1,0 +1,23 @@
+name: port
+desc: do port scan
+
+report:
+  - "{{.Workspace}}/port/sum-port.txt"
+  - "{{.Workspace}}/port/new-port.txt"
+
+pre_run:
+  - CreateFolder("{{.Workspace}}/port/")
+
+
+steps:
+  - required:
+      - "{{.Binaries}}/naabu"
+      - "{{.Workspace}}/httpserv/sum-domain.txt"
+    commands:
+      - "{{.Binaries}}/naabu -list {{.Workspace}}/httpserv/sum-domain.txt -silent -o {{.Workspace}}/port/naabu.txt"
+    scripts:
+      - ExecCmd("cat {{.Workspace}}/port/naabu.txt | {{.Binaries}}/anew {{.Workspace}}/port/sum-port.txt > {{.Workspace}}/port/new-port.txt")
+
+last_run:
+  # delete all files in workspaces folder except a file lists in report section
+  - Cleaning("{{.Workspace}}/port/")

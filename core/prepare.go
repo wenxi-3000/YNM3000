@@ -14,10 +14,8 @@ func (r *Runner) PreparTemPara() map[string]string {
 	for _, routine := range r.Routines {
 		for _, module := range routine.ParsedModules {
 			if len(module.Params) > 0 {
-				log.Println(module.Params)
 				for _, param := range module.Params {
 					for k, v := range param {
-						log.Println(k, v)
 						temPara[k] = v
 					}
 				}
