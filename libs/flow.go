@@ -18,6 +18,7 @@ type Module struct {
 	Desc    string
 	Params  []map[string]string
 	Steps   []Step
+	PreRun  []string `yaml:"pre_run"`
 	PostRun []string `yaml:"last_run"`
 	Report  []string
 }

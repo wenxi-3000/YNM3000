@@ -1,0 +1,23 @@
+name: http
+desc: do http probing use httpx
+
+report:
+  - "{{.Workspace}}/http/sum-url.txt"
+  - "{{.Workspace}}/httpp/new-url.txt"
+
+pre_run:
+  - CreateFolder("{{.Workspace}}/http/")
+
+
+steps:
+  - required:
+      - "{{.Binaries}}/httpx"
+      - "{{.Workspace}}/subdomain/sum-subdomain.txt"
+    commands:
+      - "{{.Binaries}}/httpx -list {{.Workspace}}/subdomain/sum-subdomain.txt -silent  -o {{.Workspace}}/http/{{.Target}}-httpx.txt"
+    scripts:
+      - ExecCmd("cat {{.Workspace}}/http/{{.Target}}-httpx.txt | {{.Binaries}}/anew {{.Workspace}}/http/sum-url.txt > {{.Workspace}}/http/new-url.txt")
+
+last_run:
+  # delete all files in workspaces folder except a file lists in report section
+  - Cleaning("{{.Workspace}}/http/")

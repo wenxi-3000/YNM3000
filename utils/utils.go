@@ -206,7 +206,6 @@ func RunCommandWithErr(command string, timeoutRaw ...string) (string, error) {
 }
 
 func runCommandWithError(cmd string) (string, error) {
-	log.Println(cmd)
 	command := []string{
 		"bash",
 		"-c",

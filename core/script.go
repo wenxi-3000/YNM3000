@@ -9,9 +9,10 @@ import (
 )
 
 const (
-	Append   = "Append"
-	Cleaning = "Cleaning"
-	ExecCmd  = "ExecCmd"
+	Append       = "Append"
+	Cleaning     = "Cleaning"
+	ExecCmd      = "ExecCmd"
+	CreateFolder = "CreateFolder"
 )
 
 // InitVM init scripting engine
@@ -21,7 +22,7 @@ func (r *Runner) InitVM() {
 }
 
 func (r *Runner) ExecScript(script string) string {
-	log.Println("[Run-Scripts] %v", script)
+	log.Println(script)
 	value, err := r.VM.Run(script)
 	if err == nil {
 		out, nerr := value.ToString()
@@ -75,6 +76,12 @@ func (r *Runner) LoadScripts() string {
 			return otto.Value{}
 		}
 		return result
+	})
+
+	vm.Set(CreateFolder, func(call otto.FunctionCall) otto.Value {
+		log.Println(call.Argument(0).String())
+		utils.MakeDir(call.Argument(0).String())
+		return otto.Value{}
 	})
 
 	r.VM = vm

@@ -5,25 +5,24 @@ report:
   - "{{.Workspace}}/subdomain/sum-subdomain.txt"
   - "{{.Workspace}}/subdomain/new-subdomain.txt"
 
-# {{.Output}} == {{.Workspaces}} + {{.Workspace}} but strip "/" char
+
 pre_run:
-  - CreateFolder("{{.Storages}}/subdomain/{{.Workspace}}/")
-  - CreateFolder("{{.Storages}}/summary/{{.Workspace}}/")
-  - CreateFolder("{{.Output}}/subdomain/")
+  - CreateFolder("{{.Workspace}}/subdomain/")
 
 params:
   - subfinderThreads: "50"
-  - amassTimeout: "3h"
 
 steps:
   - required:
       - "{{.Binaries}}/subfinder"
+      - "{{.Binaries}}/cleansub"
     commands:
       - "{{.Binaries}}/subfinder -d {{.Target}} -t {{.subfinderThreads}} -o {{.Workspace}}/subdomain/{{.Target}}-subfinder.txt"
   # cleaning some result
     scripts:
       #- Append("{{.Workspace}}/subdomain/sum-subdomain.txt", "{{.Workspace}}/subdomain/{{.Target}}-subfinder.txt")
-      - ExecCmd("cat {{.Workspace}}/subdomain/{{.Target}}-subfinder.txt | {{.Binaries}}/anew {{.Workspace}}/subdomain/sum-subdomain.txt > {{.Workspace}}/subdomain/new-subdomain.txt")
+      - ExecCmd("cat {{.Workspace}}/subdomain/{{.Target}}-subfinder.txt | {{.Binaries}}/cleansub -t '{{.Target}}' > {{.Workspace}}/subdomain/final-subdomain.txt")
+      - ExecCmd("cat {{.Workspace}}/subdomain/final-subdomain.txt | {{.Binaries}}/anew {{.Workspace}}/subdomain/sum-subdomain.txt > {{.Workspace}}/subdomain/new-subdomain.txt")
 
 last_run:
   # delete all files in workspaces folder except a file lists in report section

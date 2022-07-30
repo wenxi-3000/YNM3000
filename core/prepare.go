@@ -66,6 +66,11 @@ func (r *Runner) PrepareModule() {
 			module = ResolveReports(module, temp)
 			r.Reports = append(r.Reports, module.Report...)
 			//log.Println(r.Reports)
+
+			//pre_run
+			module.PreRun = ResolveSlice(module.PreRun, temp)
+
+			//steps
 			for i, step := range module.Steps {
 				module.Steps[i].Threads = ResolveData(step.Threads, temp)
 				module.Steps[i].Commands = ResolveSlice(step.Commands, temp)
@@ -74,7 +79,6 @@ func (r *Runner) PrepareModule() {
 			}
 			module.PostRun = ResolveSlice(module.PostRun, temp)
 			routinex.ParsedModules = append(routinex.ParsedModules, module)
-			log.Println(module.PostRun)
 		}
 		routines = append(routines, routinex)
 	}

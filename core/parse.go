@@ -43,6 +43,7 @@ func Parse(opt libs.Options) []libs.Routine {
 	var routines []libs.Routine
 	//解析flow模板
 	flowFile := path.Join(opt.Scan.FlowFolder, opt.Scan.Flow+".yaml")
+	log.Println(flowFile)
 	parseFlow, err := ParseFlow(flowFile)
 	if err != nil {
 		log.Println(err)

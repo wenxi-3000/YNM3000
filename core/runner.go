@@ -43,12 +43,17 @@ func Run(input string, opt libs.Options) {
 
 func (r *Runner) Start() {
 	for _, routine := range r.Routines {
-		// log.Println("=========================")
 		// log.Println(routine.ParsedModules)
 		for _, module := range routine.ParsedModules {
 			// log.Println("=========================")
 			// log.Println(module)
 
+			//pre_run
+			for _, pre := range module.PreRun {
+				r.VM.Run(pre)
+			}
+
+			//run steps
 			for _, step := range module.Steps {
 				// log.Println("=========================")
 				// log.Println(step)
@@ -68,16 +73,12 @@ func (r *Runner) Start() {
 				}
 
 				for _, script := range step.Scripts {
-					log.Println("=========================")
-					log.Println(script)
 					r.VM.Run(script)
 					//Append(script)
 				}
 			}
 
 			for _, postRun := range module.PostRun {
-				log.Println(postRun)
-				log.Println(r.Reports)
 				r.VM.Run(postRun)
 			}
 		}

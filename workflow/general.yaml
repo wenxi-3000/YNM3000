@@ -5,3 +5,4 @@ validator: domain
 routines:
   - modules:
       - subdomain
+      - http
