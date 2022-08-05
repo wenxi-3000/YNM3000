@@ -1,0 +1,22 @@
+name: http
+desc: do http scan use httpx
+
+report:
+  - "{{.Workspace}}/vuln/sum-url.txt"
+  - "{{.Workspace}}/vuln/new-url.txt"
+
+pre_run:
+  - CreateFolder("{{.Workspace}}/vuln/")
+
+steps:
+  - required:
+      - "{{.Binaries}}/nuclei"
+      - "{{.Workspace}}/http/sum-url.txt"
+    commands:
+      - "{{.Binaries}}/nuclei -list {{.Workspace}}/http/sum-url.txt -silent -o {{.Workspace}}/vuln/nuclei.txt"
+    scripts:
+      - ExecCmd("cat {{.Workspace}}/vuln/nuclei.txt | {{.Binaries}}/anew {{.Workspace}}/vuln/sum-vuln.txt > {{.Workspace}}/vuln/new-vuln.txt")
+
+last_run:
+  # delete all files in workspaces folder except a file lists in report section
+  - Cleaning("{{.Workspace}}/vuln/")

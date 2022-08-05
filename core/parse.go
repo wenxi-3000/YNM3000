@@ -2,8 +2,8 @@ package core
 
 import (
 	"YNM3000/libs"
+	"YNM3000/logger"
 	"io/ioutil"
-	"log"
 	"path"
 
 	"github.com/Shopify/yaml"
@@ -43,10 +43,10 @@ func Parse(opt libs.Options) []libs.Routine {
 	var routines []libs.Routine
 	//解析flow模板
 	flowFile := path.Join(opt.Scan.FlowFolder, opt.Scan.Flow+".yaml")
-	log.Println(flowFile)
+	logger.Info("使用的模板: ", flowFile)
 	parseFlow, err := ParseFlow(flowFile)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 	}
 
 	moduleFolder := path.Join(opt.Scan.FlowFolder, opt.Scan.Flow)
@@ -55,7 +55,7 @@ func Parse(opt libs.Options) []libs.Routine {
 			moduleFile := path.Join(moduleFolder, module+".yaml")
 			parsedModule, err := ParseModules(moduleFile)
 			if err != nil {
-				log.Println(err)
+				logger.Error(err)
 			}
 			routine.ParsedModules = append(routine.ParsedModules, parsedModule)
 		}

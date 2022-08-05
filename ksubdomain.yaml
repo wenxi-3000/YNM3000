@@ -1,0 +1,4 @@
+src_ip: 172.31.40.254
+device: en0
+src_mac: 3c:22:fb:ac:1b:6a
+dst_mac: 2c:55:d3:5a:a7:a2

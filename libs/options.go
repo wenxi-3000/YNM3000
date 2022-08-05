@@ -8,6 +8,12 @@ type Options struct {
 	Scan     Scan
 	Org      string
 	Clean    bool
+	Wordlist Wordlist
+}
+
+type Wordlist struct {
+	Subdomain string
+	PortList  string
 }
 
 type CmdInput struct {

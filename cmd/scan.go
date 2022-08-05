@@ -6,8 +6,8 @@ package cmd
 
 import (
 	"YNM3000/core"
+	"YNM3000/logger"
 	"YNM3000/utils"
-	"log"
 	"os"
 	"path"
 
@@ -46,20 +46,26 @@ func init() {
 }
 
 func runScan(_ *cobra.Command, _ []string) {
-	log.Println("==runScan==")
 
 	initScan()
+
+	//打印要跑的目标
+	logger.Info("输入的目标如下: ")
 	for input := range options.Inputs {
+		logger.Println(input)
+	}
+	for input := range options.Inputs {
+		logger.Info("开始扫描: ", input)
 		core.Run(input, options)
 	}
 }
 
 func initScan() {
-	//设置workflow的folde
+	//设置workflow的folder
 	if options.Scan.FlowFolder == "" {
 		options.Scan.FlowFolder = path.Join(options.Paths.Root, "workflow")
 		if !utils.FolderExists(options.Scan.FlowFolder) {
-			log.Println("workflow目录不存在")
+			logger.Info("workflow目录不存在")
 			os.Exit(1)
 		}
 	}

@@ -1,9 +1,9 @@
 package core
 
 import (
+	"YNM3000/logger"
 	script "YNM3000/scripts"
 	"YNM3000/utils"
-	"log"
 
 	"github.com/robertkrimen/otto"
 )
@@ -13,6 +13,7 @@ const (
 	Cleaning     = "Cleaning"
 	ExecCmd      = "ExecCmd"
 	CreateFolder = "CreateFolder"
+	DeleteFile   = "DeleteFile"
 )
 
 // InitVM init scripting engine
@@ -22,7 +23,7 @@ func (r *Runner) InitVM() {
 }
 
 func (r *Runner) ExecScript(script string) string {
-	log.Println(script)
+	logger.Info(script)
 	value, err := r.VM.Run(script)
 	if err == nil {
 		out, nerr := value.ToString()
@@ -80,6 +81,11 @@ func (r *Runner) LoadScripts() string {
 
 	vm.Set(CreateFolder, func(call otto.FunctionCall) otto.Value {
 		utils.MakeDir(call.Argument(0).String())
+		return otto.Value{}
+	})
+
+	vm.Set(DeleteFile, func(call otto.FunctionCall) otto.Value {
+		script.DeleteFile(call.Argument(0).String())
 		return otto.Value{}
 	})
 

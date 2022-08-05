@@ -1,15 +1,17 @@
 package libs
 
 import (
+	"YNM3000/logger"
 	"YNM3000/utils"
-	"log"
 	"path"
 	"path/filepath"
 )
 
 func InitOptions(opt *Options) {
-	//设置日志格式
-	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+	//日志初始化
+	// loggerInit(opt)
+
+	//路径初始化
 	opt.Paths = InitPath(opt)
 
 	//初始化命令行输入
@@ -40,7 +42,7 @@ func InitPath(opt *Options) Paths {
 	if !utils.FolderExists(paths.Org) {
 		utils.MakeDir(paths.Org)
 	}
-	log.Println(paths.Org)
+	logger.Println("文件保存路径: ", paths.Org)
 
 	return paths
 }
@@ -50,7 +52,7 @@ func InitInput(opt *Options) map[string]struct{} {
 	if opt.CmdInput.InputFile != "" {
 		var err error
 		if inputs, err = utils.FileSet(opt.CmdInput.InputFile); err != nil {
-			log.Println(err)
+			logger.Error(err)
 		}
 	}
 	if opt.CmdInput.Input != "" {

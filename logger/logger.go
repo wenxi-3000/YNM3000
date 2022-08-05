@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -38,26 +39,18 @@ func NewLogger(level int32) *Logger {
 	return &Logger{
 		w:             w,
 		level:         level,
-		fatalLogger:   log.New(w, "[FATAL]", log.Ldate|log.Ltime|log.Lshortfile),
+		fatalLogger:   log.New(w, "[FATAL]", log.Ldate|log.Ltime|log.Llongfile),
 		silentLogger:  log.New(w, "", 0),
 		printlnLogger: log.New(w, "", 0),
-		errorLogger:   log.New(w, "[ERROR]", log.Ldate|log.Ltime|log.Lshortfile),
+		errorLogger:   log.New(w, "[ERROR]", log.Ldate|log.Ltime|log.Llongfile),
 		infoLogger:    log.New(w, "[INFO]", log.Ldate|log.Ltime|log.Lshortfile),
-		warningLogger: log.New(w, "[WARNING]", log.Ldate|log.Ltime|log.Lshortfile),
-		debugLogger:   log.New(w, "[DEBUG]", log.Ldate|log.Ltime|log.Lshortfile),
-		verboseLogger: log.New(w, "[VERBOSE]", log.Ldate|log.Ltime|log.Lshortfile),
+		warningLogger: log.New(w, "[WARNING]", log.Ldate|log.Ltime|log.Llongfile),
+		debugLogger:   log.New(w, "[DEBUG]", log.Ldate|log.Ltime|log.Llongfile),
+		verboseLogger: log.New(w, "[VERBOSE]", log.Ldate|log.Ltime|log.Llongfile),
 	}
 }
 
 var stdLogger = NewLogger(LVerbose)
-
-// func (logger *Logger) SetLevel(level int32) {
-// 	if level < LFATAL || level > LVerbose {
-// 		return
-// 	}
-
-// 	atomic.StoreInt32(&logger.level, level)
-// }
 
 func (logger *Logger) SetLevel(level int32) {
 	logger.mu.Lock()
@@ -73,76 +66,30 @@ func SetLevel(level int32) {
 	stdLogger.SetLevel(level)
 }
 
-// func SetLevel(level int32) {
-// 	if level < LFATAL || level > LVerbose {
-// 		return
-// 	}
-
-// 	atomic.StoreInt32(&stdLogger.level, level)
-// }
-
-// func (logger *Logger) Println(arg ...interface{}) {
-// 	if atomic.LoadInt64(&logger.level) < LPrintln {
-// 		return
-// 	}
-// 	logger.printlnLogger.Println(arg...)
-// }
-
-// func (logger *Logger) Error(err error) {
-// 	if atomic.LoadInt64(&logger.level) < LERROR {
-// 		return
-// 	}
-// 	logger.printlnLogger.Println(err)
-// }
-
-// func (logger *Logger) Silent(arg ...interface{}) {
-// 	if atomic.LoadInt64(&logger.level) < LSilent {
-// 		return
-// 	}
-// 	logger.silentLogger.Println(arg...)
-// }
-
-// func (logger *Logger) Info(str string, arg ...interface{}) {
-// 	if atomic.LoadInt64(&logger.level) < LINFO {
-// 		return
-// 	}
-// 	logger.infoLogger.Printf(str, arg...)
-// }
-
-func Info(str string, arg ...interface{}) {
+func Info(arg ...interface{}) {
 	if atomic.LoadInt32(&stdLogger.level) < LINFO {
 		return
 	}
-	stdLogger.infoLogger.Printf(str, arg...)
+	stdLogger.infoLogger.Output(2, fmt.Sprintln(arg...))
 }
 
 func Error(err error) {
 	if atomic.LoadInt32(&stdLogger.level) < LERROR {
 		return
 	}
-	stdLogger.printlnLogger.Println(err)
+	stdLogger.errorLogger.Output(2, fmt.Sprintln(err))
 }
 
 func Println(arg ...interface{}) {
 	if atomic.LoadInt32(&stdLogger.level) < LPrintln {
 		return
 	}
-	stdLogger.printlnLogger.Println(arg...)
+	stdLogger.printlnLogger.Output(2, fmt.Sprintln(arg...))
 }
 
 func Silent(arg ...interface{}) {
 	if atomic.LoadInt32(&stdLogger.level) < LSilent {
 		return
 	}
-	stdLogger.silentLogger.Println(arg...)
+	stdLogger.silentLogger.Output(2, fmt.Sprintln(arg...))
 }
-
-// func Info(str string, arg ...interface{}) {
-// 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
-// 	log.Printf(str+"\n", arg...)
-// }
-
-// func Println(str string, arg ...interface{}) {
-// 	log.SetFlags(0)
-// 	log.Printf(str+"\n", arg...)
-// }

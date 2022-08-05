@@ -2,10 +2,10 @@ package core
 
 import (
 	"YNM3000/libs"
+	"YNM3000/logger"
 	"YNM3000/utils"
 	"bufio"
 	"fmt"
-	"log"
 	"os/exec"
 
 	"github.com/robertkrimen/otto"
@@ -43,10 +43,10 @@ func Run(input string, opt libs.Options) {
 
 func (r *Runner) Start() {
 	for _, routine := range r.Routines {
-		// log.Println(routine.ParsedModules)
+		// logger.Info(routine.ParsedModules)
 		for _, module := range routine.ParsedModules {
-			// log.Println("=========================")
-			// log.Println(module)
+			// logger.Info("=========================")
+			// logger.Info(module)
 
 			//pre_run
 			for _, pre := range module.PreRun {
@@ -55,20 +55,19 @@ func (r *Runner) Start() {
 
 			//run steps
 			for _, step := range module.Steps {
-				// log.Println("=========================")
-				// log.Println(step)
+				// logger.Info("=========================")
+				// logger.Info(step)
 				err := r.CheckRequired(step.Required)
 				if err != nil {
-					log.Println(err)
+					logger.Error(err)
 				}
 
 				if len(step.Commands) > 0 {
 					for _, command := range step.Commands {
-						results, err := RunCommand(command)
+						_, err := RunCommand(command)
 						if err != nil {
-							log.Println(err)
+							logger.Error(err)
 						}
-						log.Println(results)
 					}
 				}
 
@@ -93,12 +92,14 @@ func RunCommand(cmd string) (string, error) {
 	}
 	var output string
 	cmdx := exec.Command(command[0], command[1:]...)
-	log.Println(cmdx)
+	logger.Info("执行的命令如下: ")
+	logger.Println(cmdx)
 	cmdReader, _ := cmdx.StdoutPipe()
 	scanner := bufio.NewScanner(cmdReader)
 	go func() {
 		for scanner.Scan() {
 			out := scanner.Text()
+			logger.Println(out)
 			output += out + "\n"
 		}
 	}()

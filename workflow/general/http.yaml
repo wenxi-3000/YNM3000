@@ -8,12 +8,15 @@ report:
 pre_run:
   - CreateFolder("{{.Workspace}}/http/")
 
+params:
+  - httpxThreads: "100"
+
 steps:
   - required:
       - "{{.Binaries}}/httpx"
-      - "{{.Workspace}}/httpserv/sum-domain.txt"
+      - "{{.Workspace}}/port/sum-port.txt"
     commands:
-      - "{{.Binaries}}/httpx -list {{.Workspace}}/httpserv/sum-domain.txt -silent -o {{.Workspace}}/http/httpx.txt"
+      - "{{.Binaries}}/httpx -list {{.Workspace}}/port/sum-port.txt -t {{.httpxThreads}} -silent -o {{.Workspace}}/http/httpx.txt"
     scripts:
       - ExecCmd("cat {{.Workspace}}/http/httpx.txt | {{.Binaries}}/anew {{.Workspace}}/http/sum-url.txt > {{.Workspace}}/http/new-url.txt")
 

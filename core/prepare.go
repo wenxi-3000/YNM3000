@@ -2,8 +2,8 @@ package core
 
 import (
 	"YNM3000/libs"
+	"YNM3000/logger"
 	"bytes"
-	"log"
 	"path"
 	"text/template"
 )
@@ -55,15 +55,15 @@ func (r *Runner) PrepareModule() {
 	temp := r.PrepareTem()
 
 	for _, routine := range r.Routines {
-		// log.Println("=========================")
-		// log.Println(routine.ParsedModules)
+		// logger.Info("=========================")
+		// logger.Info(routine.ParsedModules)
 		var routinex libs.Routine
 		for _, module := range routine.ParsedModules {
-			// log.Println("=========================")
-			// log.Println(module)
+			// logger.Info("=========================")
+			// logger.Info(module)
 			module = ResolveReports(module, temp)
 			r.Reports = append(r.Reports, module.Report...)
-			//log.Println(r.Reports)
+			//logger.Info(r.Reports)
 
 			//pre_run
 			module.PreRun = ResolveSlice(module.PreRun, temp)
@@ -88,7 +88,7 @@ func ResolveData(format string, data map[string]string) string {
 	buf := &bytes.Buffer{}
 	err := t.Execute(buf, data)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return format
 	}
 	return buf.String()

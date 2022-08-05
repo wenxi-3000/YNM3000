@@ -1,11 +1,11 @@
 package utils
 
 import (
+	"YNM3000/logger"
 	"bufio"
 	"context"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"regexp"
@@ -185,7 +185,7 @@ func RunCommandWithErr(command string, timeoutRaw ...string) (string, error) {
 	var err error
 
 	timeout := CalcTimeout(timeoutRaw[0])
-	log.Println("Run command with %v seconds timeout", timeout)
+	logger.Info("Run command with %v seconds timeout", timeout)
 	var out string
 
 	c := context.Background()
@@ -220,7 +220,7 @@ func runCommandWithError(cmd string) (string, error) {
 	go func() {
 		for scanner.Scan() {
 			out := scanner.Text()
-			log.Println(out)
+			logger.Info(out)
 			output += out + "\n"
 		}
 	}()

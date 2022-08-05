@@ -1,9 +1,9 @@
 package scripts
 
 import (
+	"YNM3000/logger"
 	"YNM3000/utils"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 
@@ -13,7 +13,7 @@ import (
 // func (r *Runner) LoadScripts() {
 // 	//var output string
 // 	vm := otto.New()
-// 	log.Println("xxxx")
+// 	logger.Info("xxxx")
 // 	vm.Run(`
 //     abc = 2 + 2;
 //     console.log("The value of abc is " + abc); // 4
@@ -30,15 +30,17 @@ import (
 
 // func Append(dest string, src string) {
 // 	if !utils.FileExists(src) || utils.FileLength(src) <= 0 {
-// 		log.Println("error to append %v", src)
+// 		logger.Info("error to append %v", src)
 // 	}
 // 	data := utils.GetFileContent(src)
 // 	utils.AppendToContent(dest, data)
 // }
 
 func Append(dest string, src string) {
+	logger.Info(dest)
+	logger.Info(src)
 	if !utils.FileExists(src) || utils.FileLength(src) <= 0 {
-		log.Println(dest, src)
+		logger.Info(dest, src)
 	}
 	data := utils.GetFileContent(src)
 	utils.AppendToContent(dest, data)

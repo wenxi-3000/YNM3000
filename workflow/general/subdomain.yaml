@@ -8,22 +8,41 @@ report:
 
 pre_run:
   - CreateFolder("{{.Workspace}}/subdomain/")
+  - DeleteFile("{{.Workspace}}/subdomain/new-subdomain.txt")
 
 params:
   - subfinderThreads: "50"
+  - subdomainDict: "./libs/dict/Top_Subdomains.txt"
 
 steps:
   - required:
       - "{{.Binaries}}/subfinder"
-      - "{{.Binaries}}/cleansub"
     commands:
       - "{{.Binaries}}/subfinder -d {{.Target}} -t {{.subfinderThreads}} -o {{.Workspace}}/subdomain/{{.Target}}-subfinder.txt"
-  # cleaning some result
     scripts:
-      #- Append("{{.Workspace}}/subdomain/sum-subdomain.txt", "{{.Workspace}}/subdomain/{{.Target}}-subfinder.txt")
-      - ExecCmd("cat {{.Workspace}}/subdomain/{{.Target}}-subfinder.txt | {{.Binaries}}/cleansub -t '{{.Target}}' > {{.Workspace}}/subdomain/final-subdomain.txt")
-      - ExecCmd("cat {{.Workspace}}/subdomain/final-subdomain.txt | {{.Binaries}}/anew {{.Workspace}}/subdomain/sum-subdomain.txt > {{.Workspace}}/subdomain/new-subdomain.txt")
+      - Append("{{.Workspace}}/subdomain/final-subdomain.txt", "{{.Workspace}}/subdomain/{{.Target}}-subfinder.txt")
+
+
+  - required:
+      - "{{.Binaries}}/ksubdomain"
+    commands:
+      - "{{.Binaries}}/ksubdomain e -d {{.Target}} --silent --only-domain --skip-wild -f {{.subdomainDict}} -o {{.Workspace}}/subdomain/{{.Target}}-ksubdomain.txt"
+    scripts:
+      - Append("{{.Workspace}}/subdomain/final-subdomain.txt", "{{.Workspace}}/subdomain/{{.Target}}-ksubdomain.txt")
+
+  - required:
+    - "{{.Binaries}}/cleansub"
+    scripts:
+      #做个清洗
+      - ExecCmd("cat {{.Workspace}}/subdomain/final-subdomain.txt | {{.Binaries}}/cleansub -t '{{.Target}}' > {{.Workspace}}/subdomain/tmp-subdomain.txt")
+      #保存新域名，并且加入到老域名文件
+      - ExecCmd("cat {{.Workspace}}/subdomain/tmp-subdomain.txt | {{.Binaries}}/anew {{.Workspace}}/subdomain/sum-subdomain.txt > {{.Workspace}}/subdomain/{{.Target}}-new-subdomain.txt")
+      - Append("{{.Workspace}}/subdomain/new-subdomain.txt", "{{.Workspace}}/subdomain/{{.Target}}-new-subdomain.txt")
+
+
+
+
 
 last_run:
-  # delete all files in workspaces folder except a file lists in report section
+  #删除所有除了report的内容
   - Cleaning("{{.Workspace}}/subdomain/")

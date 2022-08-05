@@ -8,15 +8,17 @@ report:
 pre_run:
   - CreateFolder("{{.Workspace}}/httpserv/")
 
+params:
+  - httpxThreads: "100"
 
 steps:
   - required:
       - "{{.Binaries}}/httpx"
       - "{{.Workspace}}/subdomain/sum-subdomain.txt"
     commands:
-      - "{{.Binaries}}/httpx -list {{.Workspace}}/subdomain/sum-subdomain.txt -silent -o {{.Workspace}}/httpserv/{{.Target}}-httpx.txt"
+      - "{{.Binaries}}/httpx -list {{.Workspace}}/subdomain/sum-subdomain.txt -t {{.httpxThreads}} -silent -o {{.Workspace}}/httpserv/httpx.txt"
     scripts:
-      - ExecCmd("cat {{.Workspace}}/httpserv/{{.Target}}-httpx.txt | {{.Binaries}}/finddomain > {{.Workspace}}/httpserv/domains.txt")
+      - ExecCmd("cat {{.Workspace}}/httpserv/httpx.txt | {{.Binaries}}/finddomain > {{.Workspace}}/httpserv/domains.txt")
       - ExecCmd("cat {{.Workspace}}/httpserv/domains.txt | {{.Binaries}}/anew {{.Workspace}}/httpserv/sum-domain.txt > {{.Workspace}}/httpserv/new-domain.txt")
 
 last_run:
