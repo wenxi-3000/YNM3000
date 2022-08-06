@@ -11,13 +11,13 @@ go build
 ```
 
 下载如下二进制到binaries目录
-anew https://github.com/tomnomnom/anew
-ksubdomain https://github.com/boy-hack/ksubdomain
-cleansub  https://github.com/j3ssie/go-auxs/tree/master/cleansub
-finddomain https://github.com/ShadowFl0w/mytools/tree/main/finddomain
-httpx https://github.com/projectdiscovery/httpx
-nuclei https://github.com/projectdiscovery/nuclei
-subfinder https://github.com/projectdiscovery/subfinder
+anew https://github.com/tomnomnom/anew<br>
+ksubdomain https://github.com/boy-hack/ksubdomain<br>
+cleansub  https://github.com/j3ssie/go-auxs/tree/master/cleansub<br>
+finddomain https://github.com/ShadowFl0w/mytools/tree/main/finddomain<br>
+httpx https://github.com/projectdiscovery/httpx<br>
+nuclei https://github.com/projectdiscovery/nuclei<br>
+subfinder https://github.com/projectdiscovery/subfinder<br>
 
 
 ### 使用
@@ -29,7 +29,7 @@ YNM3000 scan -f ./target.txt --org HackedBycsdzds
 ```
 
 # 模板
-模板有数个变量，可以进行任意组合配置
+workflow目录用于存放模板，模板有数个变量，可以进行任意组合配置，通过模板定义工具调用
 
 
 
