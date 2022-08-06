@@ -10,7 +10,7 @@ cd YNM3000
 go build
 ```
 
-下载如下二进制到binaries目录
+下载如下二进制到binaries目录<br>
 anew https://github.com/tomnomnom/anew<br>
 ksubdomain https://github.com/boy-hack/ksubdomain<br>
 cleansub  https://github.com/j3ssie/go-auxs/tree/master/cleansub<br>
