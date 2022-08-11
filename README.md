@@ -2,7 +2,7 @@
 要你命三千，集多种渗透工具于一身的终极武器霸王。<br>
 通过yaml文件配置任意命令行工具的调度引擎。
 
-<img src="./libs/images/YNM3000.jpeg" width=390 height=250/>
+<img src="./code/libs/images/YNM3000.jpeg" width=390 height=250/>
 
 # 源码安装
 ```
@@ -26,7 +26,7 @@ subfinder https://github.com/projectdiscovery/subfinder<br>
 2. 在workflow里面配置模板。
 
 ```
-YNM3000 scan -f ./target.txt --org HackedBycsdzds
+YNM3000 scan -f ./target.txt --org test
 ```
 
 # 模板
