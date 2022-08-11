@@ -35,6 +35,12 @@ subfinder   https://github.com/projectdiscovery/subfinder
 YNM3000 scan -f ./target.txt --org test
 ```
 
+## 4. 结果保存
+结果保存在results目录<br>
+通过--org参数指定results目录下的子目录<br>
+如果不适用--org参数则保存在./results/no-org目录
+
+
 ## 4. 模板
 workflow目录用于存放模板，可以进行任意组合配置（通过yaml配置）
 
