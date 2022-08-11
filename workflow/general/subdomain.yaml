@@ -12,7 +12,7 @@ pre_run:
 
 params:
   - subfinderThreads: "50"
-  - subdomainDict: "./libs/dict/Top_Subdomains.txt"
+  - subdomainDict: "./dict/Top_Subdomains.txt"
 
 steps:
   - required:
